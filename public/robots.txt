@@ -1,0 +1,6 @@
+# robots.txt — mosquee-epernay.fr
+User-agent: *
+Allow: /
+
+# TODO (Phase 4) : ajouter la ligne Sitemap après génération du sitemap.
+# Sitemap: https://mosquee-epernay.fr/sitemap-index.xml

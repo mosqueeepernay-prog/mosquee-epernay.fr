@@ -1,0 +1,71 @@
+---
+import '../styles/global.css';
+import { SITE } from '../lib/site';
+import { DEFAULT_LOCALE, LOCALE_INFO, type Locale } from '../i18n/config';
+
+interface Props {
+  /** Titre de la page (suffixé par le nom du site). */
+  title?: string;
+  /** Description meta — PLACEHOLDER : texte SEO validé par le comité. */
+  description?: string;
+  /** Locale de la page. Français par défaut. */
+  locale?: Locale;
+}
+
+const { title, description, locale = DEFAULT_LOCALE } = Astro.props;
+const info = LOCALE_INFO[locale];
+
+const siteName = locale === 'ar' && SITE.nameAr ? SITE.nameAr : SITE.name;
+const pageTitle = title ? `${title} · ${siteName}` : siteName;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang={info.htmlLang} dir={info.dir}>
+  <head>
+    <title>{pageTitle}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    <meta name="generator" content={Astro.generator} />
+    {info.dir === 'rtl' && <meta name="color-scheme" content="light" />}
+  </head>
+
+  <body class="flex min-h-dvh flex-col bg-sand-50 text-ink-900">
+    <a class="skip-link" href="#main-content">
+      Aller au contenu principal
+    </a>
+
+    <header class="border-b border-sand-200 bg-white/80 backdrop-blur">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+        <!-- PLACEHOLDER : logo officiel non fourni → marque textuelle provisoire. -->
+        <a href="/" class="text-lg font-bold tracking-tight text-brand-800 hover:text-brand-600">
+          {siteName}
+        </a>
+
+        <!-- TODO (Phase 1) : navigation principale + sélecteur FR / العربية. -->
+        <nav aria-label="Navigation principale" class="hidden text-sm text-ink-500">
+          <span class="sr-only">Navigation à venir en Phase 1</span>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="mt-12 border-t border-sand-200 bg-white">
+      <div class="mx-auto w-full max-w-6xl px-4 py-8 text-sm text-ink-500 sm:px-6">
+        <p>
+          © {year} {siteName}
+        </p>
+        <!--
+          PLACEHOLDER : coordonnées, mentions légales et réseaux sociaux
+          officiels non fournis — volontairement non affichés.
+          À compléter en Phase 3/4 après validation du comité.
+        -->
+      </div>
+    </footer>
+  </body>
+</html>
