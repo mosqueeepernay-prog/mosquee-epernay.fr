@@ -1,0 +1,30 @@
+---
+/**
+ * Widget officiel MAWAQIT — solution de repli (option C).
+ *
+ * ⚠️ COMPOSANT INACTIF : il ne rend rien tant que MAWAQIT n'a pas fourni
+ *    d'URL officielle via la variable `MAWAQIT_WIDGET_URL`. Aucun iframe
+ *    n'est intégré avec une URL devinée ou non autorisée.
+ *
+ * volontairement séparé de PrayerTimesCards : si le widget officiel est un
+ * jour autorisé, il remplace le bloc de cartes, il ne se mélange jamais avec
+ * les cartes personnalisées. Aucun composant ne l'utilise encore.
+ */
+import { getDictionary } from '../../i18n/dictionaries';
+import { resolveRoute } from '../../i18n/routes';
+import { mawaqitConfig } from '../../lib/prayer-times';
+
+const { locale } = resolveRoute(Astro.url.pathname);
+const dict = getDictionary(locale);
+
+const src = mawaqitConfig.widgetUrl;
+---
+
+{src !== '' && (
+  <iframe
+    src={src}
+    title={dict.home.prayer.title}
+    loading="lazy"
+    class="min-h-96 w-full border-0"
+  />
+)}

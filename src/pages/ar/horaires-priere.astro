@@ -1,8 +1,19 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import PageBlocks from '../../components/shared/PageBlocks.astro';
+import PrayerTimesCards from '../../components/prayer/PrayerTimesCards.astro';
+import PrayerSourceLabel from '../../components/prayer/PrayerSourceLabel.astro';
+import { getPrayerTimes } from '../../lib/prayer-times';
+
+// Même source de données que la page d'accueil (un seul provider pour le site).
+const times = await getPrayerTimes();
 ---
 
 <PageLayout>
-  <PageBlocks />
+  <PrayerTimesCards times={times} />
+  <PrayerSourceLabel times={times} class="mt-4" />
+
+  <div class="mt-10">
+    <PageBlocks />
+  </div>
 </PageLayout>

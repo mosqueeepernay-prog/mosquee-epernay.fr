@@ -61,6 +61,15 @@ export const ar: Dictionary = {
     text: 'الموقع قيد التطوير — ستُنشر المعلومات الرسمية بعد اعتماد اللجنة.',
   },
 
+  source: {
+    label: 'المصدر',
+    provider: 'MAWAQIT',
+    // اسم الصفحة الرسمية على MAWAQIT — قيد التأكيد من طرف اللجنة.
+    mosque: 'مسجد أبو بكر، إبرناي',
+    linkLabel: 'صفحة MAWAQIT الرسمية للمسجد',
+    confirmedBy: 'البيانات مقدَّمة من المصدر الرسمي MAWAQIT.',
+  },
+
   home: {
     hero: {
       badge: 'الموقع الرسمي',

@@ -12,6 +12,11 @@
  * CE FICHIER EST LE SEUL ENDROIT À MODIFIER pour changer la méthode de
  * calcul : toute la Phase 2 lira ces valeurs ici.
  * Aucune logique de calcul n'est implémentée à ce stade (voir Phase 2).
+ *
+ * AFFICHAGE des horaires : la source utilisée par l'UI est
+ * `src/lib/prayer-times/` (provider MAWAQIT, cf. README). Ce fichier reste
+ * la configuration du calcul local à venir (Phase 2) ainsi que la source
+ * unique du fuseau horaire du projet (Europe/Paris).
  */
 
 /** Méthodes de calcul prises en charge par le futur moteur. */

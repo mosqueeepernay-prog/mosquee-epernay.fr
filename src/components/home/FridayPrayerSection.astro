@@ -1,11 +1,13 @@
 ---
 /**
- * Bloc « prière du vendredi » — PLACEHOLDER.
- * Aucune heure réelle (à confirmer par le comité).
+ * Bloc « prière du vendredi ».
+ * Heure de la Jumua fournie par la source officielle (MAWAQIT) via le
+ * provider ; sans données → « --:-- », aucune heure inventée.
  */
 import Heading from '../shared/Heading.astro';
 import Card from '../shared/Card.astro';
 import { getDictionary } from '../../i18n/dictionaries';
+import { getPrayerTimes } from '../../lib/prayer-times';
 import type { Locale } from '../../i18n/config';
 
 interface Props {
@@ -15,6 +17,9 @@ interface Props {
 const { locale } = Astro.props;
 const dict = getDictionary(locale);
 const friday = dict.home.friday;
+
+const times = await getPrayerTimes();
+const jumua = times?.jumua ?? null;
 ---
 
 <section class="bg-white py-12 sm:py-16" aria-labelledby="friday-prayer-title">
@@ -30,11 +35,15 @@ const friday = dict.home.friday;
       <Card class="border-brand-200 bg-brand-50/60">
         <p class="text-sm font-medium uppercase tracking-wide text-ink-500">{friday.time}</p>
         <p class="mt-1 text-3xl font-bold tabular-nums text-brand-700 sm:text-4xl">
-          {dict.common.timePlaceholder}
+          {jumua !== null ? <time datetime={jumua}>{jumua}</time> : dict.common.timePlaceholder}
         </p>
-        <p class="mt-3 rounded-lg border border-dashed border-brand-300 bg-white px-3 py-2 text-sm text-ink-500">
-          {dict.common.badgeDev} : {friday.hint}
-        </p>
+        {jumua !== null ? (
+          <p class="mt-3 text-sm text-ink-500">{dict.source.confirmedBy}</p>
+        ) : (
+          <p class="mt-3 rounded-lg border border-dashed border-brand-300 bg-white px-3 py-2 text-sm text-ink-500">
+            {dict.common.badgeDev} : {friday.hint}
+          </p>
+        )}
       </Card>
     </div>
   </div>

@@ -5,3 +5,4 @@ coverage/
 package-lock.json
 *.min.*
 public/sitemap*.xml
+.env.example

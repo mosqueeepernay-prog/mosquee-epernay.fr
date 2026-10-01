@@ -63,6 +63,15 @@ export const fr = {
     text: 'Site en cours de développement — les informations officielles seront publiées après validation par le comité.',
   },
 
+  source: {
+    label: 'Source',
+    provider: 'MAWAQIT',
+    // Nom de la fiche officielle MAWAQIT (à confirmer par le comité si renommé).
+    mosque: 'Mosquée Abou Bakr, Épernay',
+    linkLabel: 'Fiche officielle MAWAQIT de la mosquée',
+    confirmedBy: 'Données fournies par la source officielle MAWAQIT.',
+  },
+
   home: {
     hero: {
       badge: 'Site officiel',

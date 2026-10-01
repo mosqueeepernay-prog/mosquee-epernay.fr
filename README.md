@@ -56,8 +56,33 @@ chaque page à son équivalent, et `src/lib/seo.ts` génère canonical +
 
 ## Horaires de prière
 
-`src/lib/prayerConfig.ts` est le **seul fichier de configuration** du calcul
-(methodes et Asr y sont centralisées).
+**Source d'affichage** : architecture provider dans `src/lib/prayer-times/`.
+
+```
+UI (cartes existantes, design inchangé)
+   ↓
+getPrayerTimes()          sélection + validation + anti-péremption
+   ↓
+PrayerTimesProvider       interface générique (provider.ts)
+   ↓
+MawaqitProvider           source concrète (mawaqit/)
+   ↓
+PrayerTimesCards.astro    cartes Fajr → Isha
+```
+
+- **Sans endpoint officiel MAWAQIT** → `UnavailablePrayerTimesProvider` →
+  `null` → les cartes affichent `--:--`. Aucune heure n'est jamais inventée.
+- Variables (cf. `.env.example`, `.env` ignoré par Git) :
+  `MAWAQIT_MOSQUE_ID` (11002), `MAWAQIT_API_URL` (vide par défaut),
+  `MAWAQIT_API_KEY` (secret serveur, jamais `PUBLIC_`), `MAWAQIT_WIDGET_URL`
+  (vide — iframe officiel réservé à `MawaqitWidget.astro`).
+- Données **validées** (date YYYY-MM-DD réelle + heures `HH:MM`) et **rejetées**
+  si la date ≠ aujourd'hui à `Europe/Paris` : aucune donnée périmée.
+- Page d'accueil et `/horaires-priere/` partagent la **même** source :
+  `getPrayerTimes()`.
+
+**Calcul local (Phase 2)** : `src/lib/prayerConfig.ts` reste le seul fichier de
+configuration du calcul (methodes et Asr y sont centralisées).
 
 > ⚠️ Valeurs **provisoires de développement** : `mwl` (Muslim World League) +
 > `standard` (Asr Shafi'i). À valider par le comité de la mosquée avant

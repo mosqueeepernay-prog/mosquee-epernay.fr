@@ -1,0 +1,47 @@
+---
+/**
+ * Grille des 6 cartes d'horaires (Fajr → Isha).
+ *
+ * Design strictement identique à la version Phase 1 : seule la source des
+ * données change (provider MAWAQIT, voir src/lib/prayer-times/).
+ * Sans données officielles ou si elles sont invalides → « --:-- ».
+ * Les noms des prières viennent du dictionnaire (FR / AR).
+ */
+import { getDictionary } from '../../i18n/dictionaries';
+import { resolveRoute } from '../../i18n/routes';
+import { PRAYER_KEYS, type PrayerTimesData } from '../../lib/prayer-times';
+
+interface Props {
+  /** Données du jour, ou `null` si la source officielle est indisponible. */
+  times?: PrayerTimesData | null;
+  /** Espacement au-dessus de la grille (selon le contexte d'usage). */
+  class?: string;
+}
+
+const { times = null, class: className = '' } = Astro.props;
+
+const { locale } = resolveRoute(Astro.url.pathname);
+const dict = getDictionary(locale);
+const names = dict.home.prayer.prayers;
+
+const cards = PRAYER_KEYS.map((key, index) => ({
+  key,
+  name: names[index] ?? key,
+  value: times?.[key] ?? null,
+}));
+---
+
+<ul class:list={['grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6', className]}>
+  {cards.map((card) => (
+    <li class="rounded-2xl border border-sand-200 bg-white p-4 text-center shadow-sm">
+      <p class="text-sm text-ink-500">{card.name}</p>
+      <p class="mt-1 text-xl font-bold tabular-nums text-brand-700">
+        {card.value !== null ? (
+          <time datetime={card.value}>{card.value}</time>
+        ) : (
+          dict.common.timePlaceholder
+        )}
+      </p>
+    </li>
+  ))}
+</ul>

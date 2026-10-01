@@ -1,0 +1,43 @@
+---
+/**
+ * Mention de source des horaires, discrète, sous le bloc concerné :
+ *   « Source : MAWAQIT »
+ *   « Source : MAWAQIT — Mosquée Abou Bakr, Épernay » (données officielles)
+ *
+ * Le lien pointe vers la fiche publique officielle de la mosquée sur MAWAQIT
+ * (nouvelle onglet, rel="noopener noreferrer"). La mention reste légère pour
+ * ne pas perturber la mise en page existante.
+ */
+import { getDictionary } from '../../i18n/dictionaries';
+import { resolveRoute } from '../../i18n/routes';
+import { mawaqitConfig, type PrayerTimesData } from '../../lib/prayer-times';
+
+interface Props {
+  /** Données actives du jour (permet d'afficher le nom complet de la mosquée). */
+  times?: PrayerTimesData | null;
+  class?: string;
+}
+
+const { times = null, class: className = '' } = Astro.props;
+
+const { locale } = resolveRoute(Astro.url.pathname);
+const dict = getDictionary(locale);
+const source = dict.source;
+
+const active = times !== null;
+const suffix = active ? ` — ${source.mosque}` : '';
+---
+
+<p class:list={['text-sm text-ink-400', className]}>
+  {source.label} :{' '}
+  <a
+    href={mawaqitConfig.publicPageUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    title={source.linkLabel}
+    class="font-medium text-ink-500 underline underline-offset-4 hover:text-brand-700"
+  >
+    {source.provider}
+  </a>
+  {suffix}
+</p>
