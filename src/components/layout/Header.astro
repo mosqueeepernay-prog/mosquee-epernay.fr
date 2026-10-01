@@ -1,0 +1,169 @@
+---
+/**
+ * En-tête responsive : marque, navigation, sélecteur de langue, menu mobile.
+ * Desktop (≥ xl) : navigation horizontale.
+ * Mobile / tablette : bouton burger + panneau déroulant (accessible clavier :
+ * aria-expanded / aria-controls, fermeture par Échap avec retour du focus).
+ */
+import Logo from './Logo.astro';
+import LangSwitcher from './LangSwitcher.astro';
+import { getDictionary } from '../../i18n/dictionaries';
+import { NAV_ORDER, ROUTES } from '../../i18n/routes';
+import type { Locale } from '../../i18n/config';
+import type { PageSlug } from '../../i18n/routes';
+import { SITE } from '../../lib/site';
+
+interface Props {
+  locale: Locale;
+  currentSlug: PageSlug | null;
+}
+
+const { locale, currentSlug } = Astro.props;
+const dict = getDictionary(locale);
+// Nom affiché : FR depuis site.ts, AR depuis le dictionnaire (nom de travail).
+const siteName = locale === 'ar' ? dict.site.name : SITE.name;
+---
+
+<header class="sticky top-0 z-40 border-b border-sand-200 bg-white/95 backdrop-blur">
+  <div class="container-page flex h-16 items-center justify-between gap-3">
+    <!-- Marque (logo placeholder + nom du site) -->
+    <a
+      href={ROUTES[locale].home}
+      class="flex min-h-11 items-center gap-3 rounded-lg ps-1"
+      aria-label={siteName}
+    >
+      <Logo label={dict.a11y.logoPlaceholder} />
+      <span class="flex flex-col leading-tight">
+        <span class="text-sm font-extrabold tracking-tight text-brand-800 sm:text-base">
+          {siteName}
+        </span>
+        <span class="text-[11px] font-medium uppercase tracking-wider text-ink-400">
+          {dict.site.tagline}
+        </span>
+      </span>
+    </a>
+
+    <!-- Navigation principale (desktop) -->
+    <nav aria-label={dict.a11y.mainNav} class="hidden items-center gap-0.5 xl:flex">
+      {NAV_ORDER.map((slug) => (
+        <a
+          href={ROUTES[locale][slug]}
+          aria-current={currentSlug === slug ? 'page' : undefined}
+          class:list={[
+            'inline-flex min-h-11 items-center rounded-lg px-2.5 text-sm font-medium transition-colors',
+            currentSlug === slug
+              ? 'bg-brand-50 text-brand-800'
+              : 'text-ink-700 hover:bg-sand-100 hover:text-brand-700',
+          ]}
+        >
+          {dict.nav[slug]}
+        </a>
+      ))}
+    </nav>
+
+    <!-- Actions : langue + menu mobile -->
+    <div class="flex items-center gap-2">
+      <LangSwitcher locale={locale} currentSlug={currentSlug} />
+
+      <button
+        id="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label={dict.header.openMenu}
+        data-open={dict.header.openMenu}
+        data-close={dict.header.closeMenu}
+        class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-sand-300 bg-white text-ink-700 transition-colors hover:bg-sand-100 xl:hidden"
+      >
+        <span class="icon-menu" aria-hidden="true">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M4 6h16" />
+            <path d="M4 12h16" />
+            <path d="M4 18h16" />
+          </svg>
+        </span>
+        <span class="icon-close" aria-hidden="true">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M6 6l12 12" />
+            <path d="M18 6L6 18" />
+          </svg>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Menu mobile / tablette -->
+  <div id="mobile-menu" hidden class="border-t border-sand-200 bg-white xl:hidden">
+    <nav aria-label={dict.a11y.mobileNav} class="container-page py-3">
+      <ul class="flex flex-col gap-1">
+        {NAV_ORDER.map((slug) => (
+          <li>
+            <a
+              href={ROUTES[locale][slug]}
+              aria-current={currentSlug === slug ? 'page' : undefined}
+              class:list={[
+                'flex min-h-11 items-center rounded-lg px-3 text-base font-medium transition-colors',
+                currentSlug === slug
+                  ? 'bg-brand-50 text-brand-800'
+                  : 'text-ink-700 hover:bg-sand-100 hover:text-brand-700',
+              ]}
+            >
+              {dict.nav[slug]}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('mobile-menu');
+
+  if (toggle instanceof HTMLButtonElement && menu instanceof HTMLElement) {
+    const openLabel = toggle.dataset.open ?? '';
+    const closeLabel = toggle.dataset.close ?? '';
+
+    const setOpen = (open: boolean): void => {
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? closeLabel : openLabel);
+      if (open) {
+        menu.removeAttribute('hidden');
+      } else {
+        menu.setAttribute('hidden', '');
+      }
+    };
+
+    toggle.addEventListener('click', () => {
+      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    menu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => setOpen(false));
+    });
+  }
+</script>

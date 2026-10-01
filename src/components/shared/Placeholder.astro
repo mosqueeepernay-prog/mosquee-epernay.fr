@@ -1,0 +1,38 @@
+---
+/**
+ * Placeholder de développement — encadré pointillé très visible.
+ * Rappelle explicitement qu'aucune information officielle n'est encore fournie.
+ */
+import { getDictionary } from '../../i18n/dictionaries';
+import { resolveRoute } from '../../i18n/routes';
+
+interface Props {
+  /** Libellé du contenu à venir. */
+  label: string;
+  /** Aide optionnelle (phase, source de la donnée…). */
+  hint?: string;
+  /** Rendu compact (ligne unique) ou bloc pleine largeur. */
+  compact?: boolean;
+  class?: string;
+}
+
+const { label, hint, compact = false, class: className = '' } = Astro.props;
+const { locale } = resolveRoute(Astro.url.pathname);
+const dict = getDictionary(locale);
+const resolvedHint = hint ?? dict.common.placeholderHint;
+---
+
+<div
+  class:list={[
+    'rounded-2xl border-2 border-dashed border-brand-300 bg-brand-50/60',
+    compact ? 'p-4' : 'p-5 sm:p-6',
+    className,
+  ]}
+>
+  <span class="inline-flex items-center rounded-full border border-brand-300 bg-white px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-brand-700">
+    {dict.common.badgeDev}
+  </span>
+  <p class="mt-2 font-semibold text-ink-800">{label}</p>
+  {resolvedHint && <p class="mt-1 text-sm text-ink-500">{resolvedHint}</p>}
+  <slot />
+</div>

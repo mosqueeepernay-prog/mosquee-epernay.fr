@@ -1,0 +1,26 @@
+---
+/**
+ * Marque du site.
+ * PLACEHOLDER : aucun logo officiel n'a été fourni → marque textuelle
+ * avec emplacement pointillé clairement identifié.
+ */
+interface Props {
+  /** Texte alternatif (placeholder du logo officiel). */
+  label: string;
+  size?: 'sm' | 'lg';
+}
+
+const { label, size = 'sm' } = Astro.props;
+const dimensions = size === 'sm' ? 'h-10 w-10 text-[9px]' : 'h-14 w-14 text-[10px]';
+---
+
+<span
+  role="img"
+  aria-label={label}
+  class:list={[
+    'grid shrink-0 place-items-center rounded-xl border-2 border-dashed border-brand-300 bg-brand-50 font-bold uppercase tracking-widest text-brand-700',
+    dimensions,
+  ]}
+>
+  Logo
+</span>

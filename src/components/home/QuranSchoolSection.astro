@@ -1,0 +1,40 @@
+---
+/**
+ * Bloc « école coranique » — PLACEHOLDER.
+ * Aucune donnée réelle (programme, horaires, inscriptions).
+ */
+import Heading from '../shared/Heading.astro';
+import Button from '../shared/Button.astro';
+import { getDictionary } from '../../i18n/dictionaries';
+import { ROUTES } from '../../i18n/routes';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dict = getDictionary(locale);
+const school = dict.home.school;
+---
+
+<section class="bg-sand-100 py-12 sm:py-16" aria-labelledby="school-title">
+  <div class="container-page grid gap-8 lg:grid-cols-2 lg:items-center">
+    <div>
+      <Heading as="h2" id="school-title">
+        {school.title}
+      </Heading>
+      <p class="mt-3 max-w-xl leading-relaxed text-ink-600">{school.text}</p>
+      <div class="mt-6">
+        <Button href={ROUTES[locale]['ecole-coranique']} variant="primary">
+          {school.link}
+        </Button>
+      </div>
+    </div>
+
+    <!-- PLACEHOLDER : photo officielle de l'école (aucun asset inventé). -->
+    <div class="flex min-h-56 items-center justify-center rounded-2xl border-2 border-dashed border-brand-300 bg-white/70 p-6 text-center text-sm font-medium text-ink-500">
+      {school.visual}
+    </div>
+  </div>
+</section>

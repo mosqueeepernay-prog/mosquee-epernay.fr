@@ -1,0 +1,50 @@
+---
+/**
+ * Bloc « actualités et annonces » — PLACEHOLDER.
+ * Aucune annonce réelle publiée (Content Collections en Phase 3).
+ */
+import Heading from '../shared/Heading.astro';
+import Card from '../shared/Card.astro';
+import Button from '../shared/Button.astro';
+import { getDictionary } from '../../i18n/dictionaries';
+import { ROUTES } from '../../i18n/routes';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dict = getDictionary(locale);
+const section = dict.home.announcements;
+const items = [0, 1, 2];
+---
+
+<section class="bg-sand-50 py-12 sm:py-16" aria-labelledby="announcements-title">
+  <div class="container-page">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <Heading as="h2" id="announcements-title">
+        {section.title}
+      </Heading>
+      <Button href={ROUTES[locale].actualites} variant="outline">
+        {section.link}
+      </Button>
+    </div>
+
+    <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {items.map(() => (
+        <li>
+          <Card as="article" class="h-full border-dashed">
+            <span class="inline-flex rounded-full bg-sand-100 px-3 py-1 text-xs font-bold tabular-nums text-ink-500">
+              {dict.common.datePlaceholder}
+            </span>
+            <h3 class="mt-3 text-lg font-bold text-ink-900">{section.cardTitle}</h3>
+            <p class="mt-2 text-sm text-ink-600">{section.cardText}</p>
+          </Card>
+        </li>
+      ))}
+    </ul>
+
+    <p class="mt-4 text-sm text-ink-400">{section.empty}</p>
+  </div>
+</section>

@@ -1,0 +1,103 @@
+---
+/**
+ * Bloc « contact et localisation » — PLACEHOLDER.
+ * Adresse, téléphone et e-mail non fournis ; carte non intégrée (Phase 4).
+ */
+import Heading from '../shared/Heading.astro';
+import Card from '../shared/Card.astro';
+import Button from '../shared/Button.astro';
+import { getDictionary } from '../../i18n/dictionaries';
+import { ROUTES } from '../../i18n/routes';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dict = getDictionary(locale);
+const contact = dict.home.contact;
+
+const rows = [
+  { icon: 'pin', label: dict.nav.contact, value: contact.address },
+  { icon: 'phone', label: 'Téléphone / الهاتف', value: contact.phone },
+  { icon: 'mail', label: 'E-mail', value: contact.email },
+];
+---
+
+<section class="bg-white py-12 sm:py-16" aria-labelledby="contact-title">
+  <div class="container-page grid gap-8 lg:grid-cols-2">
+    <div>
+      <Heading as="h2" id="contact-title">
+        {contact.title}
+      </Heading>
+
+      <ul class="mt-5 space-y-3">
+        {rows.map((row) => (
+          <li class="flex items-start gap-3 rounded-xl border border-sand-200 bg-sand-50 p-4">
+            <span class="mt-0.5 text-brand-600" aria-hidden="true">
+              {row.icon === 'pin' && (
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 21s7-5.686 7-11a7 7 0 1 0-14 0c0 5.314 7 11 7 11z" />
+                  <circle cx="12" cy="10" r="2.5" />
+                </svg>
+              )}
+              {row.icon === 'phone' && (
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" />
+                </svg>
+              )}
+              {row.icon === 'mail' && (
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path d="m3 7 9 6 9-6" />
+                </svg>
+              )}
+            </span>
+            <span>
+              <span class="block text-sm font-semibold text-ink-800">{row.label}</span>
+              <span class="block text-ink-600">{row.value}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-6">
+        <Button href={ROUTES[locale].contact} variant="primary">
+          {contact.link}
+        </Button>
+      </div>
+    </div>
+
+    <!-- PLACEHOLDER : carte à intégrer en Phase 4 (aucune API activée). -->
+    <Card padding="none" class="overflow-hidden">
+      <div class="flex min-h-64 items-center justify-center bg-sand-100 p-6 text-center text-sm font-medium text-ink-500">
+        {contact.map}
+      </div>
+      <div class="border-t border-sand-200 p-4">
+        <p class="text-sm text-ink-400">{dict.common.phase4}</p>
+      </div>
+    </Card>
+  </div>
+</section>

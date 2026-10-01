@@ -1,71 +1,89 @@
 ---
+/**
+ * Layout de base : <html lang/dir>, métadonnées SEO (title, description,
+ * canonical, hreflang, Open Graph), en-tête, bandeau et pied de page.
+ *
+ * La locale et la page sont déduites du chemin courant (i18n/routes.ts),
+ * ce qui garantit un lang/dir et des liens hreflang toujours cohérents.
+ */
 import '../styles/global.css';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import AnnouncementBanner from '../components/shared/AnnouncementBanner.astro';
+import { LOCALE_INFO } from '../i18n/config';
+import { getDictionary } from '../i18n/dictionaries';
+import { resolveRoute } from '../i18n/routes';
+import { canonicalFor, hreflangLinks, ogLocale } from '../lib/seo';
 import { SITE } from '../lib/site';
-import { DEFAULT_LOCALE, LOCALE_INFO, type Locale } from '../i18n/config';
 
 interface Props {
-  /** Titre de la page (suffixé par le nom du site). */
+  /** Surchage optionnelle du <title> (sinon : titre de la page). */
   title?: string;
-  /** Description meta — PLACEHOLDER : texte SEO validé par le comité. */
+  /** Surchage optionnelle de la meta description. */
   description?: string;
-  /** Locale de la page. Français par défaut. */
-  locale?: Locale;
 }
 
-const { title, description, locale = DEFAULT_LOCALE } = Astro.props;
+const { title, description } = Astro.props;
+const { locale, slug } = resolveRoute(Astro.url.pathname);
+
+const dict = getDictionary(locale);
 const info = LOCALE_INFO[locale];
+const pageContent = slug ? dict.pages[slug] : null;
 
-const siteName = locale === 'ar' && SITE.nameAr ? SITE.nameAr : SITE.name;
-const pageTitle = title ? `${title} · ${siteName}` : siteName;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+// Nom du site : FR depuis site.ts, AR depuis le dictionnaire (nom de travail).
+const siteName = locale === 'ar' ? dict.site.name : SITE.name;
+const pageTitle = title ?? pageContent?.title ?? siteName;
+const pageDescription = description ?? pageContent?.description;
 
-const year = new Date().getFullYear();
+const canonical = canonicalFor(locale, slug, Astro.url.pathname);
+const alternates = hreflangLinks(slug);
 ---
 
 <!doctype html>
 <html lang={info.htmlLang} dir={info.dir}>
   <head>
+    <!-- Encodage explicite : requis (Astro n'injecte pas <meta charset>). -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>{pageTitle}</title>
-    {description && <meta name="description" content={description} />}
+    {pageDescription && <meta name="description" content={pageDescription} />}
+
+    <!-- Canonical + hreflang (FR par défaut, AR sous /ar/, x-default = FR) -->
     <link rel="canonical" href={canonical} />
+    {alternates.map((alternate) => (
+      <link rel="alternate" hreflang={alternate.lang} href={alternate.href} />
+    ))}
+
     <meta name="generator" content={Astro.generator} />
-    {info.dir === 'rtl' && <meta name="color-scheme" content="light" />}
+    <meta name="theme-color" content="#1a5549" />
+    <meta name="color-scheme" content="light" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={pageTitle} />
+    {pageDescription && <meta property="og:description" content={pageDescription} />}
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocale(locale)} />
+    <meta property="og:locale:alternate" content={ogLocale(locale === 'ar' ? 'fr' : 'ar')} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={pageTitle} />
+    {pageDescription && <meta name="twitter:description" content={pageDescription} />}
   </head>
 
   <body class="flex min-h-dvh flex-col bg-sand-50 text-ink-900">
     <a class="skip-link" href="#main-content">
-      Aller au contenu principal
+      {dict.a11y.skipToContent}
     </a>
 
-    <header class="border-b border-sand-200 bg-white/80 backdrop-blur">
-      <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-        <!-- PLACEHOLDER : logo officiel non fourni → marque textuelle provisoire. -->
-        <a href="/" class="text-lg font-bold tracking-tight text-brand-800 hover:text-brand-600">
-          {siteName}
-        </a>
-
-        <!-- TODO (Phase 1) : navigation principale + sélecteur FR / العربية. -->
-        <nav aria-label="Navigation principale" class="hidden text-sm text-ink-500">
-          <span class="sr-only">Navigation à venir en Phase 1</span>
-        </nav>
-      </div>
-    </header>
+    <AnnouncementBanner />
+    <Header locale={locale} currentSlug={slug} />
 
     <main id="main-content" class="flex-1">
       <slot />
     </main>
 
-    <footer class="mt-12 border-t border-sand-200 bg-white">
-      <div class="mx-auto w-full max-w-6xl px-4 py-8 text-sm text-ink-500 sm:px-6">
-        <p>
-          © {year} {siteName}
-        </p>
-        <!--
-          PLACEHOLDER : coordonnées, mentions légales et réseaux sociaux
-          officiels non fournis — volontairement non affichés.
-          À compléter en Phase 3/4 après validation du comité.
-        -->
-      </div>
-    </footer>
+    <Footer locale={locale} currentSlug={slug} />
   </body>
 </html>

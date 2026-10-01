@@ -1,0 +1,48 @@
+---
+/**
+ * Fil d'Ariane : Accueil → page courante.
+ * Sémantique ARIA : <nav aria-label> + <ol> + aria-current="page".
+ */
+import { getDictionary } from '../../i18n/dictionaries';
+import { ROUTES, type PageSlug } from '../../i18n/routes';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  currentSlug: PageSlug;
+}
+
+const { locale, currentSlug } = Astro.props;
+
+// Pas de fil d'Ariane sur l'accueil (il n'a pas de parent).
+const isHome = currentSlug === 'home';
+
+const dict = getDictionary(locale);
+const currentLabel = dict.nav[currentSlug];
+---
+
+{!isHome && (
+  <nav aria-label={dict.a11y.breadcrumb} class="mb-5">
+    <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-500">
+      <li class="flex items-center gap-2">
+        <a
+          href={ROUTES[locale].home}
+          class="inline-flex min-h-11 items-center rounded text-brand-700 underline-offset-4 hover:underline"
+        >
+          {dict.nav.home}
+        </a>
+        <span aria-hidden="true" class="text-ink-400">
+          /
+        </span>
+      </li>
+      <li>
+        <span
+          aria-current="page"
+          class="inline-flex min-h-11 items-center font-medium text-ink-800"
+        >
+          {currentLabel}
+        </span>
+      </li>
+    </ol>
+  </nav>
+)}

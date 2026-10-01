@@ -1,0 +1,23 @@
+---
+/**
+ * Corps générique des pages internes : grille de placeholders
+ * à partir des libellés du dictionnaire (page courante).
+ */
+import Placeholder from './Placeholder.astro';
+import { getDictionary } from '../../i18n/dictionaries';
+import { resolveRoute } from '../../i18n/routes';
+
+const { locale, slug } = resolveRoute(Astro.url.pathname);
+const dict = getDictionary(locale);
+const blocks = slug ? dict.pages[slug].blocks : [];
+---
+
+{blocks.length > 0 && (
+  <ul class="grid gap-4 sm:grid-cols-2">
+    {blocks.map((label) => (
+      <li>
+        <Placeholder label={label} class="h-full" />
+      </li>
+    ))}
+  </ul>
+)}

@@ -1,0 +1,32 @@
+---
+/**
+ * Section de page : conteneur + espacement vertical + tonalité de fond.
+ * Propriétés logiques uniquement → compatible RTL.
+ */
+interface Props {
+  id?: string;
+  as?: 'section' | 'div' | 'aside';
+  tone?: 'default' | 'white' | 'sand' | 'brand';
+  labelledBy?: string;
+  class?: string;
+}
+
+const { id, as = 'section', tone = 'default', labelledBy, class: className = '' } = Astro.props;
+
+const Tag = as;
+
+const tones: Record<NonNullable<Props['tone']>, string> = {
+  default: 'bg-sand-50',
+  white: 'bg-white',
+  sand: 'bg-sand-100',
+  brand: 'bg-brand-800 text-white',
+};
+
+const classes = ['py-12 sm:py-16', tones[tone], className].filter(Boolean).join(' ');
+---
+
+<Tag id={id} aria-labelledby={labelledBy} class={classes}>
+  <div class="container-page">
+    <slot />
+  </div>
+</Tag>

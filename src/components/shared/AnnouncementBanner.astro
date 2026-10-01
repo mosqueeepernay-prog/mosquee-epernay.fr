@@ -1,0 +1,25 @@
+---
+/**
+ * Bandeau d'annonce global (au-dessus du header).
+ * Utilisé ici pour l'avis « site en cours de développement ».
+ * Peut servir d'annonce urgente (changements d'horaires, Ramadan…) en Phase 3+.
+ */
+import { getDictionary } from '../../i18n/dictionaries';
+import { resolveRoute } from '../../i18n/routes';
+
+const { locale } = resolveRoute(Astro.url.pathname);
+const dict = getDictionary(locale);
+---
+
+<div
+  role="region"
+  aria-label={dict.banner.label}
+  class="border-b border-gold-400/50 bg-gold-300/30"
+>
+  <div class="container-page flex flex-wrap items-center gap-x-3 gap-y-1.5 py-2.5">
+    <span class="shrink-0 rounded-full bg-brand-700 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white">
+      {dict.banner.label}
+    </span>
+    <p class="text-sm text-ink-800">{dict.banner.text}</p>
+  </div>
+</div>

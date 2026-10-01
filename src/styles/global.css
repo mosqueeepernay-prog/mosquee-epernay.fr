@@ -70,6 +70,12 @@
     line-height: 1.6;
   }
 
+  /* Typographie arabe sur toutes les pages RTL. */
+  [dir='rtl'] {
+    font-family: var(--font-arabic);
+    letter-spacing: 0;
+  }
+
   /* Accessibilité : anneau de focus visible et cohérent. */
   :focus-visible {
     outline: 2px solid var(--color-brand-600);
@@ -109,5 +115,31 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+}
+
+@layer components {
+  /* Conteneur de page : centré, largeur max, marges latérales constantes.
+     Utilise des propriétés logiques → fonctionne en LTR et RTL. */
+  .container-page {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 72rem;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-page {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  /* Icônes du bouton menu mobile : ouvrir / fermer. */
+  #nav-toggle[aria-expanded='false'] .icon-close {
+    display: none;
+  }
+
+  #nav-toggle[aria-expanded='true'] .icon-menu {
+    display: none;
   }
 }

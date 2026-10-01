@@ -1,0 +1,55 @@
+---
+/**
+ * Hero de la page d'accueil (un seul H1 sur la page).
+ * Visuel : emplacement photo placeholder, aucun asset inventé.
+ */
+import Button from '../shared/Button.astro';
+import { getDictionary } from '../../i18n/dictionaries';
+import { ROUTES } from '../../i18n/routes';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dict = getDictionary(locale);
+const hero = dict.home.hero;
+---
+
+<section class="relative overflow-hidden bg-brand-800 text-white" aria-labelledby="hero-title">
+  <div
+    class="absolute inset-0 opacity-30"
+    aria-hidden="true"
+    style="background-image: radial-gradient(circle at 15% 25%, #2c8570 0, transparent 45%), radial-gradient(circle at 85% 70%, #1a5549 0, transparent 50%);"
+  ></div>
+
+  <div class="container-page relative py-14 sm:py-20 lg:py-24">
+    <span class="inline-flex rounded-full border border-white/40 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-widest">
+      {hero.badge}
+    </span>
+
+    <h1
+      id="hero-title"
+      class="mt-5 max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl"
+    >
+      {hero.title}
+    </h1>
+
+    <p class="mt-4 max-w-2xl text-lg text-brand-100 sm:text-xl">{hero.subtitle}</p>
+
+    <div class="mt-8 flex flex-wrap gap-3">
+      <Button href={ROUTES[locale]['horaires-priere']} variant="onDark" size="lg">
+        {hero.ctaPrayer}
+      </Button>
+      <Button href={ROUTES[locale].dons} variant="onDarkOutline" size="lg">
+        {hero.ctaDonation}
+      </Button>
+    </div>
+
+    <!-- PLACEHOLDER : photo officielle de la mosquée (aucun asset inventé). -->
+    <div class="mt-10 flex min-h-36 max-w-2xl items-center justify-center rounded-2xl border-2 border-dashed border-white/50 bg-white/5 p-6 text-center text-sm font-medium text-brand-100">
+      {hero.visual}
+    </div>
+  </div>
+</section>

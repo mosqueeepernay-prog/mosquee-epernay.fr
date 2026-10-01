@@ -1,0 +1,41 @@
+---
+/**
+ * Bloc « prière du vendredi » — PLACEHOLDER.
+ * Aucune heure réelle (à confirmer par le comité).
+ */
+import Heading from '../shared/Heading.astro';
+import Card from '../shared/Card.astro';
+import { getDictionary } from '../../i18n/dictionaries';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dict = getDictionary(locale);
+const friday = dict.home.friday;
+---
+
+<section class="bg-white py-12 sm:py-16" aria-labelledby="friday-prayer-title">
+  <div class="container-page">
+    <div class="grid gap-6 lg:grid-cols-2 lg:items-center">
+      <div>
+        <Heading as="h2" id="friday-prayer-title">
+          {friday.title}
+        </Heading>
+        <p class="mt-3 max-w-xl text-ink-600">{friday.hint}</p>
+      </div>
+
+      <Card class="border-brand-200 bg-brand-50/60">
+        <p class="text-sm font-medium uppercase tracking-wide text-ink-500">{friday.time}</p>
+        <p class="mt-1 text-3xl font-bold tabular-nums text-brand-700 sm:text-4xl">
+          {dict.common.timePlaceholder}
+        </p>
+        <p class="mt-3 rounded-lg border border-dashed border-brand-300 bg-white px-3 py-2 text-sm text-ink-500">
+          {dict.common.badgeDev} : {friday.hint}
+        </p>
+      </Card>
+    </div>
+  </div>
+</section>

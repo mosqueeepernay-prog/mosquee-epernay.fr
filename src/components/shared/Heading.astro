@@ -1,0 +1,35 @@
+---
+/**
+ * Titre typographique. Une page = un seul `<h1>` (voir PageLayout / Hero).
+ */
+interface Props {
+  as?: 'h1' | 'h2' | 'h3' | 'h4';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  class?: string;
+  id?: string;
+}
+
+const { as = 'h2', size, class: className = '', id } = Astro.props;
+const Tag = as;
+
+const defaultSize: Record<NonNullable<Props['as']>, NonNullable<Props['size']>> = {
+  h1: 'lg',
+  h2: 'lg',
+  h3: 'md',
+  h4: 'sm',
+};
+
+const sizes: Record<NonNullable<Props['size']>, string> = {
+  sm: 'text-base font-semibold',
+  md: 'text-xl font-bold sm:text-2xl',
+  lg: 'text-2xl font-bold sm:text-3xl',
+  xl: 'text-3xl font-bold sm:text-4xl lg:text-5xl',
+};
+
+const sizeClass = sizes[size ?? defaultSize[as]];
+const tone = as === 'h1' || as === 'h2' ? 'text-ink-900' : 'text-ink-800';
+---
+
+<Tag id={id} class:list={['tracking-tight', tone, sizeClass, className]}>
+  <slot />
+</Tag>

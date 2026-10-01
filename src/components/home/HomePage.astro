@@ -1,0 +1,26 @@
+---
+/**
+ * Assembleur de la page d'accueil : toutes les sections, dans l'ordre.
+ * La locale est déduite du chemin (/ ou /ar/).
+ */
+import Hero from './Hero.astro';
+import PrayerTimesSection from './PrayerTimesSection.astro';
+import FridayPrayerSection from './FridayPrayerSection.astro';
+import AnnouncementsSection from './AnnouncementsSection.astro';
+import ActivitiesSection from './ActivitiesSection.astro';
+import QuranSchoolSection from './QuranSchoolSection.astro';
+import DonationSection from './DonationSection.astro';
+import ContactSection from './ContactSection.astro';
+import { resolveRoute } from '../../i18n/routes';
+
+const { locale } = resolveRoute(Astro.url.pathname);
+---
+
+<Hero locale={locale} />
+<PrayerTimesSection locale={locale} />
+<FridayPrayerSection locale={locale} />
+<AnnouncementsSection locale={locale} />
+<ActivitiesSection locale={locale} />
+<QuranSchoolSection locale={locale} />
+<DonationSection locale={locale} />
+<ContactSection locale={locale} />

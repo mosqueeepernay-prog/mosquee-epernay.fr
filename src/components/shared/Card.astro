@@ -1,0 +1,31 @@
+---
+/**
+ * Carte : conteneur arrondi sur fond blanc, bordure douce.
+ */
+interface Props {
+  as?: 'div' | 'article' | 'li' | 'section';
+  padding?: 'none' | 'md' | 'lg';
+  class?: string;
+}
+
+const { as = 'div', padding = 'md', class: className = '' } = Astro.props;
+const Tag = as;
+
+const paddings = {
+  none: '',
+  md: 'p-5 sm:p-6',
+  lg: 'p-6 sm:p-8',
+};
+
+const classes = [
+  'rounded-2xl border border-sand-200 bg-white shadow-sm',
+  paddings[padding],
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<Tag class={classes}>
+  <slot />
+</Tag>

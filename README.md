@@ -2,10 +2,11 @@
 
 Site officiel de la Mosquée d'Épernay (France).
 
-> **Statut : Phase 0 — architecture uniquement.**
-> Aucune information officielle de la mosquée n'est encore intégrée.
-> Toutes les données manquantes sont marquées `PLACEHOLDER` et ne doivent
-> **jamais** être inventées (adresse, téléphone, horaires, dons, logo, etc.).
+> **Statut : Phase 1 — coquille bilingue (FR / AR).**
+> Les sections sont en place, avec des **placeholders visibles** : aucune
+> information officielle de la mosquée n'est encore fournie (adresse,
+> téléphone, horaires, dons, logo, photos…). Tout est marqué `PLACEHOLDER`
+> et ne doit **jamais** être inventé.
 
 ---
 
@@ -43,8 +44,15 @@ npm run format:check # Prettier (vérification)
 - **Français (fr)** : langue par défaut → `/`
 - **Arabe (ar)** : `/ar/`, mise en page **RTL** (`dir="rtl"`)
 
-Configuration : `src/i18n/config.ts`. Les dictionnaires et pages arabe arrivent
-en Phase 1.
+Routes (8 pages × 2 locales) : `/`, `/horaires-priere/`, `/la-mosquee/`,
+`/ecole-coranique/`, `/activites/`, `/actualites/`, `/dons/`, `/contact/` et
+leurs équivalents sous `/ar/`.
+
+Configuration : `src/i18n/config.ts` (locales) + `src/i18n/routes.ts` (routes).
+Dictionnaires FR/AR : `src/i18n/dictionaries/` (typage strict : toute clé
+manquante en arabe est une erreur TypeScript). Le sélecteur de langue relie
+chaque page à son équivalent, et `src/lib/seo.ts` génère canonical +
+`hreflang` (`fr`, `ar`, `x-default`) + Open Graph.
 
 ## Horaires de prière
 
@@ -60,15 +68,15 @@ en Phase 1.
 
 ```
 src/
-├── assets/            # images, logo, polices (Phase 1+)
-├── components/        # composants réutilisables (Phase 1+)
-├── content/           # contenu Markdown : actualités, activités (Phase 3)
-├── i18n/              # configuration des locales
-├── layouts/           # BaseLayout (head, header, footer)
-├── lib/               # site.ts, prayerConfig.ts, utilitaires
-├── pages/             # routes Astro (/, /ar/…)
-├── styles/            # global.css (jetons Tailwind 4)
-└── types/             # types partagés (Phase 1+)
+├── components/
+│   ├── home/          # sections de la page d'accueil (placeholders)
+│   ├── layout/        # Header, Footer, Logo, LangSwitcher
+│   └── shared/        # Button, Card, Heading, Section, Breadcrumbs…
+├── i18n/              # config, routes, dictionnaires fr/ar
+├── layouts/           # BaseLayout (SEO), PageLayout (pages internes)
+├── lib/               # site.ts, prayerConfig.ts, seo.ts
+├── pages/             # routes Astro (/, /horaires-priere/, /ar/…)
+└── styles/            # global.css (jetons Tailwind 4)
 public/                # fichiers statiques (robots.txt, …)
 .github/workflows/     # CI
 ```
@@ -85,8 +93,8 @@ public/                # fichiers statiques (robots.txt, …)
 
 | Phase | Contenu                                                           | Statut      |
 | ----- | ----------------------------------------------------------------- | ----------- |
-| 0     | Astro + TS + React + Tailwind + ESLint/Prettier + CI + BaseLayout | ✅ en cours |
-| 1     | i18n complet, header/footer, 9 sections FR + AR (RTL)             | ⬜          |
+| 0     | Astro + TS + React + Tailwind + ESLint/Prettier + CI + BaseLayout | ✅          |
+| 1     | i18n complet, header/footer, sections FR + AR (RTL)               | ✅ en cours |
 | 2     | Module horaires de prière (SSG, compte à rebours, ICS)            | ⬜          |
 | 3     | Page d'accueil complète + contenu réel                            | ⬜          |
 | 4     | SEO (JSON-LD, sitemap, hreflang), a11y & performance              | ⬜          |

@@ -1,0 +1,38 @@
+---
+/**
+ * Layout des pages internes : fil d'Ariane + H1 + intro (un seul H1/page),
+ * puis contenu fourni par la page via <slot />.
+ */
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/shared/Breadcrumbs.astro';
+import { getDictionary } from '../i18n/dictionaries';
+import { resolveRoute } from '../i18n/routes';
+
+const { locale, slug } = resolveRoute(Astro.url.pathname);
+const dict = getDictionary(locale);
+const content = slug ? dict.pages[slug] : null;
+---
+
+<BaseLayout>
+  {content && (
+    <>
+      <div class="container-page pt-8 sm:pt-12">
+        {slug && <Breadcrumbs locale={locale} currentSlug={slug} />}
+
+        <h1 class="max-w-3xl text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl lg:text-5xl">
+          {content.h1}
+        </h1>
+
+        {content.intro && (
+          <p class="mt-4 max-w-3xl text-base leading-relaxed text-ink-600 sm:text-lg">
+            {content.intro}
+          </p>
+        )}
+      </div>
+
+      <div class="container-page pb-16 pt-8 sm:pb-24 sm:pt-10">
+        <slot />
+      </div>
+    </>
+  )}
+</BaseLayout>
